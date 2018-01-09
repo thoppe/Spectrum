@@ -1,7 +1,7 @@
 # Spectrum
 _exploring the gender continuum with deep learning_
 
-Videos are posted to the [exsilco](https://www.youtube.com/channel/UCAJIi3CN0WhFw-egGapQ7ug) youtube channel.
+Videos are posted to the [exsilico](https://www.youtube.com/channel/UCAJIi3CN0WhFw-egGapQ7ug) youtube channel.
 
 ![](src/sample_image.jpg)
 
