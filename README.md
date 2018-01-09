@@ -1,6 +1,10 @@
 # Spectrum
 _exploring the gender continuum with deep learning_
 
+Videos are posted to the [exsilco](https://www.youtube.com/channel/UCAJIi3CN0WhFw-egGapQ7ug) youtube channel.
+
+![](src/sample_image.jpg)
+
 ### Notes for a new video
 
 + Download the video from the url `youtube-dl URL`
@@ -9,7 +13,7 @@ _exploring the gender continuum with deep learning_
 + Identify the faces from the video `python process_images.py videos/drag_queen/out/`. This takes a long time.
 + Use the CNN model to label each image `python predict_images.py image_processed/videos/drag_queen/out/`. Data is saved in the [results](results/) folder.
 + Generate the animation `python compute_animations.py drag_queen`
-+ Update the video sources in this [README](README.md).
++ Update the video sources in this [README](https://github.com/thoppe/Spectrum/edit/master/README.md).
 + Upload to youtube and fill out the sources template.
 
 ### Attribution
