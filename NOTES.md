@@ -18,25 +18,6 @@ Install missing deps from fresh install
        sudo apt install webp
 
 
-Girl2guy
-https://www.youtube.com/watch?v=Bw8M-wfHC9A
-
-guy2girl2
-https://www.youtube.com/watch?v=lu1zSZui8Gc
-
-guy2girl3 (resting bitch face)
-https://www.youtube.com/watch?v=0ydrnmoGpP8
-
-guy2girl4
-https://www.youtube.com/watch?v=aJAMcE9cP0E
-
-girl2guy2
-https://www.youtube.com/watch?v=7MwfKiRlRA4&list=RDBw8M-wfHC9A&index=2
-
-girl2guy3
-https://www.youtube.com/watch?v=GQ1tDCOr_ko
-
-
 Convert images back to video
 avconv -y -r 15 -i {}/%05d.png -b:v 768k -s 640x360
 
