@@ -1,6 +1,14 @@
 # Spectrum
 _exploring the gender continuum with deep learning_
 
+### Notes for a new video
+
++ Download the video from the url `youtube-dl URL`
++ Convert the images, one per second `mkdir out; avconv -r 1 -an -y "out/%04d.png" -i VIDEO.webm`
++ Manually remove frames at the start and end that are not content
++ 
+
+
 ### Attribution
 
 Tools and assests for the Spectrum project. Model was trained off images from
@@ -17,4 +25,13 @@ from the paper
 
 ### Video sources
 
-+ Jenna (control video), [How To Avoid Talking To People You Don't Want To Talk To](https://www.youtube.com/watch?v=8wRXa971Xw0)
+#### Drag Queens
++ Martin Catalogne, [Drag Queen Make Up Tutorial](https://www.youtube.com/watch?v=khGXJxF_LjI), (label _drag\_queen_)
++ dope2111, [Guy to Girl Makeup Transformation](https://www.youtube.com/watch?v=_4FoWD6zpKU), (label _guy2girl_)
+
+#### Drag Kings
+
+
+
+#### Control
++ Jenna, [How To Avoid Talking To People You Don't Want To Talk To](https://www.youtube.com/watch?v=8wRXa971Xw0)

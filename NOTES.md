@@ -17,17 +17,6 @@ Install missing deps from fresh install
        sudo -H pip install --upgrade youtube-dl
        sudo apt install webp
 
-jenna
-https://www.youtube.com/watch?v=8wRXa971Xw0
-mkdir -p out; avconv  -r 1 -an -y "out/%04d.png" -i *.webm
-
-guy2girl
-https://www.youtube.com/watch?v=_4FoWD6zpKU
-avconv -ss 00:01:42 -t 00:06:15 -i FILEOUT -r 4 -an -y "out/%04d.pn
-
-
-Drag queen
-https://www.youtube.com/watch?v=khGXJxF_LjI
 
 Girl2guy
 https://www.youtube.com/watch?v=Bw8M-wfHC9A
