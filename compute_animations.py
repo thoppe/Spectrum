@@ -24,6 +24,8 @@ prop = fm.FontProperties(fname=f_font)
 x_width = 1920
 y_height = 1080
 frame_per_second = 15
+lead_time = 1
+post_time = 3
 
 scale = 2
 x_width /= scale
@@ -58,10 +60,10 @@ def animate(name):
     df["EMA"] = pd.ewma(df[key], span=30)
 
     red_line_color = '#FF002A'
-
+    filename_counter = collections.Counter()
             
     for k, (_, row) in tqdm(enumerate(df.iterrows())):
-
+        
         f_save = os.path.join(save_dest, name, "{:05d}.png".format(k))
         if os.path.exists(f_save): continue
         print f_save
@@ -144,6 +146,8 @@ def animate(name):
         #plt.show()
         #exit()
 
+'''
+# Build the frames
 NAMES = [
     "jenna", "julien", "drag_queen",
     "girl2guy","girl2guy2","girl2guy3",
@@ -153,21 +157,48 @@ NAMES = [
 func = joblib.delayed(animate)
 with joblib.Parallel(-1) as MP:
     MP(func(x) for x in NAMES)
-
+'''
 
 org_dir = os.getcwd()
 os.chdir(save_dest)
 
 def build_mp4(name): 
-    f_mp4 = name+'.mp4'
+    f_avi = name+'.avi'
+    args = " -r {} -b:v 44000k -s {}x{} -y "
+    args = args.format(frame_per_second, x_width*scale, y_height*scale)
 
-    if not os.path.exists(f_mp4):
-        #cmd = "avconv -ac 1 -y -r 15 -i {}/%05d.png -b:v 768k -s 640x360 "
-        cmd = "avconv -ac 1 -y -r {} -i {}/%05d.png -b:v 44000k -s {}x{} "
+    if not os.path.exists(f_avi) or True:
+        f_main = name+'_main.avi'
+        f_header = name+'_header.avi'
+        f_footer = name+'_footer.avi'
 
-        cmd = cmd.format(frame_per_second, name, x_width, y_height)+f_mp4
-        print cmd
+        
+        cmd = "avconv -loop 1 -i {}/00000.png -t 00:00:{} -shortest "
+        cmd = cmd.format(name, lead_time,) + args + f_header
         os.system(cmd)
+
+        img_f_final = max(glob.glob(os.path.join(name, '*')))
+        cmd = "avconv -loop 1 -i {} -t 00:00:{} -shortest "
+        cmd = cmd.format(img_f_final, post_time,) + args + f_footer
+        os.system(cmd)
+
+        cmd = "avconv -ac 1 -i {}/%05d.png "
+        cmd = cmd.format(name,)+args+f_main
+        os.system(cmd)
+        
+        
+        # Merge the files
+        names = "{f}_header.avi|{f}_main.avi|{f}_footer.avi".format(f=name)
+        cmd = 'ffmpeg -y -i "concat:'+names+'" -c copy {f}.mp4'
+        
+        os.system(cmd.format(f=name))
+        os.remove(f_main)
+        os.remove(f_header)
+        os.remove(f_footer)
+
+
+#build_mp4("jenna")
+#exit()
 
 FD = filter(os.path.isdir, os.listdir(os.getcwd()))
 
