@@ -15,7 +15,6 @@ pal = sns.dark_palette((166/256., 98/256., 129/256.),
 
 f_font = "src/leaguespartan-bold.ttf"
 prop = fm.FontProperties(fname=f_font)
-# avconv -y -r 15 -i %05d.jpg -b:v 768k -s 640x360 test5.mp4
 
 # 2:1 aspect ratio
 #x_width = 1024
@@ -24,6 +23,7 @@ prop = fm.FontProperties(fname=f_font)
 # 16:9 aspect ratio
 x_width = 1920
 y_height = 1080
+frame_per_second = 15
 
 scale = 2
 x_width /= scale
@@ -163,9 +163,9 @@ def build_mp4(name):
 
     if not os.path.exists(f_mp4):
         #cmd = "avconv -ac 1 -y -r 15 -i {}/%05d.png -b:v 768k -s 640x360 "
-        cmd = "avconv -ac 1 -y -r 15 -i {}/%05d.png -b:v 44000k -s {}x{} "
+        cmd = "avconv -ac 1 -y -r {} -i {}/%05d.png -b:v 44000k -s {}x{} "
 
-        cmd = cmd.format(name, x_width, y_height)+f_mp4
+        cmd = cmd.format(frame_per_second, name, x_width, y_height)+f_mp4
         print cmd
         os.system(cmd)
 
