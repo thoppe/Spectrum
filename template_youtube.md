@@ -1,4 +1,4 @@
-[[Example Title]] Drag Queen Transformation and Predicted Gender (makeup by Martin Catalogne)
+[[Example Title]] Drag King (Sailor Cruz) and Predicted Gender, Part III
 [[TAGS]] deep learning, machine learning, makeup, gender, fashion, drag queen
 
 Spectrum: What does a machine know about gender?
