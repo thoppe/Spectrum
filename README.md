@@ -12,9 +12,9 @@ Videos are posted to the [exsilico](https://www.youtube.com/channel/UCAJIi3CN0Wh
 + Manually remove frames at the start and end that are not content
 + Identify the faces from the video `python process_images.py videos/drag_queen/out/`. This takes a long time.
 + Use the CNN model to label each image `python predict_images.py image_processed/videos/drag_queen/out/`. Data is saved in the [results](results/) folder.
-+ Generate the animation `python compute_animations.py drag_queen`
++ Generate the animation `python render_animations.py drag_queen`
 + Update the video sources in this [README](https://github.com/thoppe/Spectrum/edit/master/README.md).
-+ Upload to youtube and fill out the sources template.
++ Upload to youtube and fill out the [sources template](template_youtube.md).
 
 ### Attribution
 
