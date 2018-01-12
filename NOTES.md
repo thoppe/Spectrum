@@ -6,7 +6,7 @@ Install missing deps from fresh install
 	sudo apt-get install libgtk-3-dev
 	sudo apt-get install libboost-all-dev
 	sudo apt-get install libopenblas-dev liblapack-dev
-        sudo apt install webp
+	sudo apt install webp
 	sudo pip install -r requirements.txt
 
 #### Fresh install of Ubuntu 16.04, CUDA and TF
@@ -27,7 +27,7 @@ Install CUDA, then restart.
 
 Install CUDNN
 
-	libcudnn6_6.0.21-1+cuda8.0_amd64.deb
+	./libcudnn6_6.0.21-1+cuda8.0_amd64.deb
 
 Add the following lines to .bashrc
 
@@ -48,9 +48,8 @@ Convert images back to video
 
     avconv -y -r 15 -i {}/%05d.png -b:v 768k -s 640x360
 
-Musical starting tracks for auto youtube soundtrack
-
-Music track (Lisa spector)
-Gymnopedie no1
-Prelude Op. 28 No. 15 D flat Major (Raindrop)
-Apres un Reve
+Sample musical starting tracks for youtube audio
++ Music track (Lisa spector)
++ Gymnopedie no1
++ Prelude Op. 28 No. 15 D flat Major (Raindrop)
++ Apres un Reve
