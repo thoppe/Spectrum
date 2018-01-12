@@ -8,42 +8,28 @@ from tqdm import tqdm
 import tensorflow as tf
 import src.inception_resnet_v1
 
-
 batch_size = 256
 
-#image_dir = "image_processed/videos/drag_queen/out/"
+#image_dir = "videos/drag_queen/out/"
 image_dir = sys.argv[1]
 
+f_csv_dir = os.path.join("results", image_dir)
+os.system('mkdir -p ' + f_csv_dir)
+f_csv_output = os.path.join(f_csv_dir, "gender_prediction.csv")
 
 f_model_path = "./models"
-save_dest = "results"
-os.system('mkdir -p ' + save_dest)
 
-f_csv_output = os.path.join(
-    save_dest,
-    image_dir.replace('/', '_').replace('_out', '.csv')
-    .strip('/').strip('_')
-)
+F_IMAGES = glob.glob(os.path.join("image_processed", image_dir, "*"))
 
-
-F_IMAGES = glob.glob(os.path.join(image_dir, "*"))
-
-
+#### Load the images in parallel for quick detection ####
 def load_image(f_img):
     image = cv2.imread(f_img, cv2.IMREAD_COLOR)
     return f_img, image
 
 
-func = joblib.delayed(load_image)
-with joblib.Parallel(-1) as MP:
-    ITR = tqdm(F_IMAGES)
-    IMAGES = [(f, img) for f, img in MP(func(x) for x in ITR)]
-    IMAGES = dict(IMAGES)
-
-
 def image_iterator():
     block = []
-    for f, img in IMAGES.items():
+    for f, img in tqdm(IMAGES.items()):
         if img is not None:
             block.append((f, img))
         if len(block) == batch_size:
@@ -53,13 +39,25 @@ def image_iterator():
         yield block
 
 
-print "Loaded", len(IMAGES)
+print "Preloading in the segmented images"
+with joblib.Parallel(-1) as MP:
+    func = joblib.delayed(load_image)
+    IMAGES = [(f, img) for f, img in MP(func(x) for x in F_IMAGES)]
+    IMAGES = dict(IMAGES)
+
+print "Loaded {} images".format(len(IMAGES))
+
+if not IMAGES:
+    raise IOError("No files found in {}".format(
+        os.path.join("image_processed", image_dir)))
+
 data = []
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 
 with tf.Graph().as_default():
+    print "Building the tensorflow model"
     sess = tf.Session(config=config)
 
     images_in = tf.placeholder(
@@ -79,7 +77,7 @@ with tf.Graph().as_default():
         keep_probability=0.8,
         phase_train=train_mode,
         weight_decay=1e-5)
-    # gender = tf.argmax(tf.nn.softmax(gender_logits), 1)
+
     gender = tf.nn.softmax(gender_logits)
 
     age_ = tf.cast(tf.constant([i for i in range(0, 101)]), tf.float32)
@@ -90,13 +88,14 @@ with tf.Graph().as_default():
         tf.local_variables_initializer()
     )
     sess.run(init_op)
+
+    print "Restoring the saved model"
     saver = tf.train.Saver()
     ckpt = tf.train.get_checkpoint_state(f_model_path)
     saver.restore(sess, ckpt.model_checkpoint_path)
 
     for block in image_iterator():
         f_names, imgs = zip(*block)
-        print len(f_names), len(imgs)
 
         args = {images_in: imgs, train_mode: False}
         age_res, gender_res = sess.run([age, gender], feed_dict=args)
@@ -104,7 +103,7 @@ with tf.Graph().as_default():
         for f, ax, gx in zip(f_names, age_res, gender_res):
             data.append({"age": ax, "gender": gx[1], "filename": f})
 
-df = pd.DataFrame(data).sort_values('filename').set_index("filename")
-df.to_csv(f_csv_output)
-
-print df
+if __name__ == "__main__":
+    df = pd.DataFrame(data).sort_values('filename').set_index("filename")
+    df.to_csv(f_csv_output)
+    print df
