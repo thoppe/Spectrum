@@ -39,3 +39,5 @@ Tools and assests for the Spectrum project. Model was trained off images from [I
 #### Control
 + Jenna, [How To Avoid Talking To People You Don't Want To Talk To](https://www.youtube.com/watch?v=8wRXa971Xw0), (label _jenna_)
 + Julien Solomita, [reading comments about my mustache](https://www.youtube.com/watch?v=0kYykClLSqo), (label _julien_)
+
+### [Install notes][NOTES.md]

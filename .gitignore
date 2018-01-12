@@ -4,3 +4,5 @@ org_data/*
 videos/*
 
 *~
+*.pyc
+.python-version

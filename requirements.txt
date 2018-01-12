@@ -1,0 +1,21 @@
+# File processing
+youtube-dl
+
+# Data processing
+pandas
+numpy
+seaborn
+matplotlib
+
+# Machine learning
+tensorflow
+
+# Image processing
+dlib
+imutils
+opencv-python
+
+# Helper functions
+tqdm
+joblib
+
