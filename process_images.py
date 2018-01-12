@@ -20,6 +20,8 @@ f_shape_predictor = "models/shape_predictor_68_face_landmarks.dat"
 if not os.path.exists(output_dir):
     os.system('mkdir -p {}'.format(output_dir))
 
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor(f_shape_predictor)
 
 def process_image(f_img):
     '''
@@ -31,8 +33,6 @@ def process_image(f_img):
     if os.path.exists(f_img_out):
         return None
 
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor(f_shape_predictor)
     image = cv2.imread(f_img, cv2.IMREAD_COLOR)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     rects = detector(gray, 2)
@@ -60,4 +60,3 @@ if __name__ == "__main__":
         func = joblib.delayed(process_image)
         for _ in MP(func(x) for x in tqdm(IMAGES)):
             pass
-
