@@ -30,9 +30,13 @@ label = sys.argv[2]
 # 16:9 aspect ratio
 x_width = 1920
 y_height = 1080
-frame_per_second = 15
+
+frame_encoding_speed = 4
+frame_per_second = 15*frame_encoding_speed
 lead_time = 1
 post_time = 3
+
+ewm_span = 30 * frame_encoding_speed
 
 scale = 2
 x_width /= scale
@@ -60,11 +64,11 @@ def animate(name):
     df = pd.read_csv(f_csv).sort_values("filename")
     df["timestamp"] = df.filename.apply(
         lambda x: x.split('/')[-1].split('.')[0])
-    df["timestamp"] = df.timestamp.astype(int)
-    df = df.set_index("timestamp")
+    df["timestamp"] = df.timestamp.astype(float)
+    df["seconds"] = df.timestamp / float(frame_encoding_speed)
 
     df["gender"] = (df["gender"] * 100).astype(int)
-    df["EMA"] = df.gender.ewm(span=30).mean()
+    df["EMA"] = df.gender.ewm(span=ewm_span).mean()
 
     df = df[:debug_cutoff]
 
@@ -76,11 +80,11 @@ def animate(name):
     fig.set_size_inches(x_width / 100., y_height / 100.)
 
     ax = axes[1]
-    ax.scatter(df.index, df["gender"], s=5, lw=2, alpha=0.25)
-    ax.plot(df.index, df.EMA, alpha=0.8, lw=2)
+    ax.scatter(df.seconds, df["gender"], s=2, lw=1, alpha=0.15)
+    ax.plot(df.seconds, df.EMA, alpha=0.8, lw=2)
     ax.set_ylim(0, 100)
 
-    X = np.linspace(df.index.min(), df.index.max())
+    X = np.linspace(df.seconds.min(), df.seconds.max())
     ax.plot(X, np.ones(X.shape) * 50, '--', color=red_line_color, alpha=0.5)
 
     ax.set_ylabel(
@@ -159,8 +163,8 @@ def animate(name):
 
         fig.canvas.draw()
         fig.canvas.flush_events()
-        # plt.show()
-        # exit()
+        #plt.show()
+        #exit()
 
         plt.savefig(f_save_no_bg, dpi=200, transparent=True)
 
