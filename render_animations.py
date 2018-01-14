@@ -122,7 +122,7 @@ def animate(name):
         if os.path.exists(f_save) or os.path.exists(f_save_no_bg):
             continue
 
-        Pline.set_data([df.index[:k + 1], df.EMA[:k + 1]])
+        Pline.set_data([df.seconds[:k + 1], df.EMA[:k + 1]])
         img = read_image(row.filename)
 
         if pimg is None:
