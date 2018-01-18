@@ -47,6 +47,8 @@ scale = 2
 x_width /= scale
 y_height /= scale
 
+f_intro_png = "src/introduction_slide.png"
+
 
 def read_image(f_png):
     # (1920, 1080, 3) (16:9) is the ideal aspect ratio
@@ -55,8 +57,15 @@ def read_image(f_png):
     return img
 
 def build_intro():
-    fig, axes = plt.subplots(1, 1, figsize=(x_width / 100., y_height / 100.))
-    fig.set_size_inches(x_width / 100., y_height / 100.)
+    if os.path.exists(f_intro_png):
+        return True
+
+    print "Drawing introduction slide"
+    
+    fig, axes = plt.subplots(
+        1, 1, figsize=(x_width / 100., y_height / 100.),
+        #facecolor='#EEEEEE',
+    )    
     axes.axis('off')
     g = plt.gcf()
     
@@ -65,29 +74,23 @@ def build_intro():
 
     g.text(text_x, text_y, "Spectrum", fontsize=30, **args)
 
+    args["fontproperties"] = fm.FontProperties(fname="src/LibreBaskerville-Regular.ttf")
+    args["color"] = pal[-3]
+
     lines = [
-        "A machine trained to measure gender expression from",
-        "celebrity faces. The machine made associations only",
-        "from the visual cues (eg. makeup or facial hair).",
+        "A machine trained to measure gender expression",
+        "from celebrity faces. It made associations only",
+        "from visual cues (eg. makeup or facial hair).",
         "",
-        "The project exposes our cultural sterotypes, and",
-        "machine-learning bias.",
-        
+        "Its predictions reflect our cultural sterotypes.",
+        "Gender is more than just a number."
     ]
     
     for k,line in enumerate(lines):   
-        g.text(text_x, text_y+(k+1)*dx+dx/2, line, fontsize=22, **args)
+        g.text(text_x-dx/2, text_y+(k+1)*dx+dx/2, line, fontsize=20, **args)
 
-    
-
-    plt.show()
-
-    print "INTRO"
-
-
-build_intro()
-exit()
-
+    plt.savefig(f_intro_png, dpi=200)
+    exit()
 
 def animate(name):
     print("Starting", name)
@@ -267,5 +270,6 @@ def build_mp4(image_dir, label):
         os.remove(f_footer)
 
 if __name__ == "__main__":
+    build_intro()
     animate(image_dir)
     build_mp4(image_dir, label)
