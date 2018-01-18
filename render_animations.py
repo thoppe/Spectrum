@@ -31,6 +31,11 @@ label = sys.argv[2]
 x_width = 1920
 y_height = 1080
 
+# Hard-code positions of the text
+text_x = 0.0486689814815
+text_y = 0.857008744856
+
+force_render = False
 frame_encoding_speed = 4
 frame_per_second = 15*frame_encoding_speed
 lead_time = 1
@@ -69,12 +74,7 @@ def animate(name):
 
     df["gender"] = (df["gender"] * 100).astype(int)
     df["EMA"] = df.gender.ewm(span=ewm_span).mean()
-
     df = df[:debug_cutoff]
-
-    # Preload the images for a small speed boost
-    # with joblib.Parallel(-1) as MP:
-    #    images = MP(joblib.delayed(read_image)(f) for f in df.filename)
 
     fig, axes = plt.subplots(1, 2, figsize=(x_width / 100., y_height / 100.))
     fig.set_size_inches(x_width / 100., y_height / 100.)
@@ -120,7 +120,8 @@ def animate(name):
         f_save = os.path.join(output_dir, "{:05d}.png".format(k))
 
         if os.path.exists(f_save) or os.path.exists(f_save_no_bg):
-            continue
+            if not force_render:
+                continue
 
         Pline.set_data([df.seconds[:k + 1], df.EMA[:k + 1]])
         img = read_image(row.filename)
@@ -128,8 +129,6 @@ def animate(name):
         if pimg is None:
             pimg = axes[0].imshow(img)
             bbox = pimg.get_clip_box().get_points()
-            text_x = bbox[0, 0] / (x_width)
-            text_y = bbox[1, 0] / y_height + 0.025
 
             # Something like this
             # new clear axis overlay with 0-1 limits
