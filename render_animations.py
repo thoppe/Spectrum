@@ -71,7 +71,7 @@ def build_intro():
         "from the visual cues (eg. makeup or facial hair).",
         "",
         "The project exposes our cultural sterotypes, and",
-        "machine-learning bias."
+        "machine-learning bias.",
         
     ]
     
