@@ -35,7 +35,7 @@ y_height = 1080
 text_x = 0.0486689814815
 text_y = 0.857008744856
 
-force_render = False
+force_show = True
 frame_encoding_speed = 4
 frame_per_second = 15*frame_encoding_speed
 lead_time = 1
@@ -53,6 +53,40 @@ def read_image(f_png):
     f_png = f_png.replace("image_processed/", "")
     img = plt.imread(f_png)
     return img
+
+def build_intro():
+    fig, axes = plt.subplots(1, 1, figsize=(x_width / 100., y_height / 100.))
+    fig.set_size_inches(x_width / 100., y_height / 100.)
+    axes.axis('off')
+    g = plt.gcf()
+    
+    args = {"color":pal[-1], "fontproperties":prop}
+    dx = -.10
+
+    g.text(text_x, text_y, "Spectrum", fontsize=30, **args)
+
+    lines = [
+        "A machine trained to measure gender expression from",
+        "celebrity faces. The machine made associations only",
+        "from the visual cues (eg. makeup or facial hair).",
+        "",
+        "The project exposes our cultural sterotypes, and",
+        "machine-learning bias."
+        
+    ]
+    
+    for k,line in enumerate(lines):   
+        g.text(text_x, text_y+(k+1)*dx+dx/2, line, fontsize=22, **args)
+
+    
+
+    plt.show()
+
+    print "INTRO"
+
+
+build_intro()
+exit()
 
 
 def animate(name):
@@ -120,7 +154,7 @@ def animate(name):
         f_save = os.path.join(output_dir, "{:05d}.png".format(k))
 
         if os.path.exists(f_save) or os.path.exists(f_save_no_bg):
-            if not force_render:
+            if not force_show:
                 continue
 
         Pline.set_data([df.seconds[:k + 1], df.EMA[:k + 1]])
@@ -162,8 +196,10 @@ def animate(name):
 
         fig.canvas.draw()
         fig.canvas.flush_events()
-        #plt.show()
-        #exit()
+
+        if force_show:
+            plt.show()
+            exit()
 
         plt.savefig(f_save_no_bg, dpi=200, transparent=True)
 
