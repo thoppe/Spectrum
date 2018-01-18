@@ -6,7 +6,7 @@ Install missing deps from fresh install
 	sudo apt-get install libgtk-3-dev
 	sudo apt-get install libboost-all-dev
 	sudo apt-get install libopenblas-dev liblapack-dev
-	sudo apt install webp
+	sudo apt install webp melt
 	sudo pip install -r requirements.txt
 
 #### Fresh install of Ubuntu 16.04, CUDA and TF

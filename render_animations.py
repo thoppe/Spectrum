@@ -35,9 +35,11 @@ y_height = 1080
 text_x = 0.0486689814815
 text_y = 0.857008744856
 
-force_show = True
+force_show = False
 frame_encoding_speed = 4
 frame_per_second = 15*frame_encoding_speed
+
+intro_time = 5
 lead_time = 1
 post_time = 3
 
@@ -56,7 +58,7 @@ def read_image(f_png):
     img = plt.imread(f_png)
     return img
 
-def build_intro():
+def build_intro_slide():
     if os.path.exists(f_intro_png):
         return True
 
@@ -227,28 +229,30 @@ def add_background(f_save, f_background):
 def build_mp4(image_dir, label):
 
     output_dir = os.path.join("animations/", image_dir)
-
-    # org_dir = os.getcwd()
-    # os.chdir(output_dir)
-
-    f_avi = os.path.join('animations', label + '.avi')
+    f_final = os.path.join('animations', label + '.mp4')
 
     args = " -r {} -b:v 44000k -s {}x{} -y "
     args = args.format(frame_per_second, x_width * scale, y_height * scale)
 
-    if not os.path.exists(f_avi) or True:
-        f_main = os.path.join('animations/', label + '_main.avi')
-        f_header = os.path.join('animations/', label + '_header.avi')
-        f_footer = os.path.join('animations/', label + '_footer.avi')
+    if not os.path.exists(f_final) or True:
+        f_header = os.path.join('animations/', label + '_header.mp4')
+        f_main = os.path.join('animations/', label + '_main.mp4')
+        f_footer = os.path.join('animations/', label + '_footer.mp4')
 
+        
+        cross_time = 1
         f_png = os.path.join(output_dir, '00000.png')
-        cmd = "avconv -loop 1 -i {} -t 00:00:{} -shortest "
-        cmd = cmd.format(f_png, lead_time,) + args + f_header
+        cmd = "melt -profile atsc_1080p_60 {} out={} {} out={} -mix {} -mixer luma -consumer avformat:{}"
+        cmd = cmd.format(
+            f_intro_png, intro_time*frame_per_second,
+            f_png, (lead_time+cross_time)*frame_per_second,
+            cross_time*frame_per_second,
+            f_header)
         os.system(cmd)
 
         img_f_final = max(glob.glob(os.path.join(output_dir, '*')))
-        cmd = "avconv -loop 1 -i {} -t 00:00:{} -shortest "
-        cmd = cmd.format(img_f_final, post_time,) + args + f_footer
+        cmd_freeze = "avconv -loop 1 -i {} -t 00:00:{} -shortest "
+        cmd = cmd_freeze.format(img_f_final, post_time,) + args + f_footer
         os.system(cmd)
 
         cmd = "avconv -ac 1 -i {} "
@@ -257,19 +261,18 @@ def build_mp4(image_dir, label):
         os.system(cmd)
 
         # Merge the files
-        names = ("animations/{f}_header.avi|"
-                 "animations/{f}_main.avi|"
-                 "animations/{f}_footer.avi"
-                 )
-        cmd = 'ffmpeg -y -i "concat:' + names + '" -c copy {final}'
-        cmd = cmd.format(f=label, final=f_avi)
-
+        names = ("animations/{f}_header.mp4 "
+                 "animations/{f}_main.mp4 "
+                 "animations/{f}_footer.mp4 ")
+        cmd = 'melt ' + names + ' -consumer avformat:{f_final}'
+        cmd = cmd.format(f=label, f_final=f_final)
         os.system(cmd.format(f=label))
+
         os.remove(f_main)
         os.remove(f_header)
         os.remove(f_footer)
 
 if __name__ == "__main__":
-    build_intro()
+    build_intro_slide()    
     animate(image_dir)
     build_mp4(image_dir, label)
