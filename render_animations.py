@@ -50,6 +50,7 @@ x_width /= scale
 y_height /= scale
 
 f_intro_png = "src/introduction_slide.png"
+f_intro_png2 = "src/introduction_slide2.png"
 
 
 def read_image(f_png):
@@ -74,25 +75,43 @@ def build_intro_slide():
     args = {"color":pal[-1], "fontproperties":prop}
     dx = -.10
 
-    g.text(text_x, text_y, "Spectrum", fontsize=30, **args)
+    g.text(text_x, text_y, "Spectrum:", fontsize=30, **args)
 
-    args["fontproperties"] = fm.FontProperties(fname="src/LibreBaskerville-Regular.ttf")
+    args["fontproperties"] = fm.FontProperties(
+        fname="src/LibreBaskerville-Regular.ttf")
     args["color"] = pal[-3]
 
+
     lines = [
-        "A machine trained to measure gender expression",
-        "from celebrity faces. It made associations only",
-        "from visual cues (eg. makeup or facial hair).",
+        "a measurement of gender expression derived from ",
+        "a computational model.",
         "",
-        "Its predictions reflect our cultural sterotypes.",
-        "Gender is more than just a number."
+        "Trained on celebrity faces, Spectrum made associations",
+        "using visual cues (e.g., makeup or facial hair). The ",
+        "measurements reflect Western cultural sterotypes.",
     ]
     
-    for k,line in enumerate(lines):   
-        g.text(text_x-dx/2, text_y+(k+1)*dx+dx/2, line, fontsize=20, **args)
+    for k,line in enumerate(lines):
+        g.text(text_x-dx/2, text_y+(k+0.5)*dx+dx/2, line, fontsize=18, **args)
 
     plt.savefig(f_intro_png, dpi=200)
-    exit()
+
+    ### Render intro screen #2
+        
+    fig, axes = plt.subplots(
+        1, 1, figsize=(x_width / 100., y_height / 100.),
+    )
+    axes.axis('off')
+    g = plt.gcf()
+
+    lines = [
+        "Gender is more complex than ",
+        "how you express yourself."
+    ]
+    for k,line in enumerate(lines):
+        g.text(text_x-dx/2, text_y+(k+2.5)*dx+dx/2, line, fontsize=22, **args)
+    plt.savefig(f_intro_png2, dpi=200)
+
 
 def animate(name):
     print("Starting", name)
