@@ -35,7 +35,7 @@ y_height = 1080
 text_x = 0.0486689814815
 text_y = 0.857008744856
 
-force_show = False
+force_show = True
 frame_encoding_speed = 4
 frame_per_second = 15*frame_encoding_speed
 
@@ -105,11 +105,12 @@ def build_intro_slide():
     g = plt.gcf()
 
     lines = [
-        "Gender is more complex than ",
-        "how you express yourself."
+        "Gender is more complex",
+        "than physical appearance",
+        "or any computer model.",
     ]
     for k,line in enumerate(lines):
-        g.text(text_x-dx/2, text_y+(k+2.5)*dx+dx/2, line, fontsize=22, **args)
+        g.text(text_x-dx/2, text_y+(k+2.0)*dx+dx/2, line, fontsize=22, **args)
     plt.savefig(f_intro_png2, dpi=200)
 
 
@@ -130,7 +131,13 @@ def animate(name):
     df["timestamp"] = df.timestamp.astype(float)
     df["seconds"] = df.timestamp / float(frame_encoding_speed)
 
+    # Convert the measurement into a discretized value
     df["gender"] = (df["gender"] * 100).astype(int)
+
+    # Swap direction
+    df["gender"] = 100 - df.gender
+
+    # Compute smoothed curve
     df["EMA"] = df.gender.ewm(span=ewm_span).mean()
     df = df[:debug_cutoff]
 
@@ -146,7 +153,7 @@ def animate(name):
     ax.plot(X, np.ones(X.shape) * 50, '--', color=red_line_color, alpha=0.5)
 
     ax.set_ylabel(
-        r"female $\leftarrow$ Gender spectrum $\rightarrow$ male",
+        r"male $\leftarrow$ Gender expression $\rightarrow$ female",
         fontproperties=prop,
         color=pal[-1],
     )
@@ -209,14 +216,14 @@ def animate(name):
         textbox1.set_text("Spectrum: {:d}".format(int(val)))
 
         if val >= 60:
-            label = "Male"
+            label = "Female"
         elif val > 40:
             label = "Androgynous"
         elif val >= 0:
-            label = "Female"
+            label = "Male"
 
         textbox2.set_text(label)
-        textbox2.set_color(pal[min(int(val), 99)])
+        textbox2.set_color(pal[min(int(100-val), 99)])
 
         fig.canvas.draw()
         fig.canvas.flush_events()
@@ -294,4 +301,4 @@ def build_mp4(image_dir, label):
 if __name__ == "__main__":
     build_intro_slide()    
     animate(image_dir)
-    build_mp4(image_dir, label)
+    #build_mp4(image_dir, label)
