@@ -35,7 +35,7 @@ y_height = 1080
 text_x = 0.0486689814815
 text_y = 0.857008744856
 
-force_show = True
+force_show = False
 frame_encoding_speed = 4
 frame_per_second = 15*frame_encoding_speed
 
@@ -106,8 +106,8 @@ def build_intro_slide():
 
     lines = [
         "Gender is more complex",
-        "than physical appearance",
-        "or any computer model.",
+        "than your physical appearance",
+        "or the output of a computer model.",
     ]
     for k,line in enumerate(lines):
         g.text(text_x-dx/2, text_y+(k+2.0)*dx+dx/2, line, fontsize=22, **args)
@@ -257,48 +257,40 @@ def build_mp4(image_dir, label):
     output_dir = os.path.join("animations/", image_dir)
     f_final = os.path.join('animations', label + '.mp4')
 
-    args = " -r {} -b:v 44000k -s {}x{} -y "
-    args = args.format(frame_per_second, x_width * scale, y_height * scale)
+    if not os.path.exists(f_final):
+        cross_time = 1
+        fps = frame_per_second
 
-    if not os.path.exists(f_final) or True:
-        f_header = os.path.join('animations/', label + '_header.mp4')
-        f_main = os.path.join('animations/', label + '_main.mp4')
-        f_footer = os.path.join('animations/', label + '_footer.mp4')
+        f_first_frame = os.path.join(output_dir, '00000.png')
+        f_final_frame = max(glob.glob(os.path.join(output_dir, '*')))
+        
+        #f_img_collection = os.path.join(output_dir, '000??.png')
+        f_img_collection = os.path.join(output_dir, '*.png')
 
         
-        cross_time = 1
-        f_png = os.path.join(output_dir, '00000.png')
-        cmd = "melt -profile atsc_1080p_60 {} out={} {} out={} -mix {} -mixer luma -consumer avformat:{}"
+        cmd = ' '.join([
+            "melt -profile atsc_1080p_60",
+            "{} out={}",
+            "{} out={} -mix {} -mixer luma",
+            "{} out={} -mix {} -mixer luma",
+            "-group in=0 out=1 {}",
+            "{} out={}",            
+            "-consumer avformat:{}",
+        ])
+
         cmd = cmd.format(
-            f_intro_png, intro_time*frame_per_second,
-            f_png, (lead_time+cross_time)*frame_per_second,
-            cross_time*frame_per_second,
-            f_header)
+            f_intro_png, intro_time*fps,
+            f_intro_png2, (lead_time+intro_time)*fps, cross_time*fps,
+            f_first_frame, (lead_time+cross_time)*fps, cross_time*fps,
+            f_img_collection,
+            f_final_frame, post_time*fps,
+            f_final,
+        )
+        print cmd
         os.system(cmd)
 
-        img_f_final = max(glob.glob(os.path.join(output_dir, '*')))
-        cmd_freeze = "avconv -loop 1 -i {} -t 00:00:{} -shortest "
-        cmd = cmd_freeze.format(img_f_final, post_time,) + args + f_footer
-        os.system(cmd)
-
-        cmd = "avconv -ac 1 -i {} "
-        cmd = cmd.format(os.path.join(output_dir, "%05d.png")) + args
-        cmd += f_main
-        os.system(cmd)
-
-        # Merge the files
-        names = ("animations/{f}_header.mp4 "
-                 "animations/{f}_main.mp4 "
-                 "animations/{f}_footer.mp4 ")
-        cmd = 'melt ' + names + ' -consumer avformat:{f_final}'
-        cmd = cmd.format(f=label, f_final=f_final)
-        os.system(cmd.format(f=label))
-
-        os.remove(f_main)
-        os.remove(f_header)
-        os.remove(f_footer)
 
 if __name__ == "__main__":
     build_intro_slide()    
     animate(image_dir)
-    #build_mp4(image_dir, label)
+    build_mp4(image_dir, label)
