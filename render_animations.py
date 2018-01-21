@@ -177,6 +177,7 @@ def animate(name):
 
     pimg = None
 
+
     for k, (_, row) in tqdm(enumerate(df.iterrows()), total=len(df)):
 
         f_save_no_bg = os.path.join(output_dir,

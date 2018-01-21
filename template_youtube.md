@@ -1,13 +1,13 @@
 [[Example Title]] Drag King (Sailor Cruz) and Predicted Gender, Part III
 [[TAGS]] deep learning, machine learning, makeup, gender, fashion, drag queen
 
-Spectrum: What does a machine know about gender?
+Spectrum: Teaching a machine to recognize gender expression.
 Source: [CHANNEL NAME], "[NAME]"
 [URL]
 
-Trained on a half a million images from IMDB and Wikipedia, the Spectrum project looks at the intersection of machine learning and the presentation of gender. While algorithm is unbiased, the training dataset (and consequently society at large) certainly has a bias. The algorithm teaches the machine to look for the common traits that we use to differentiate ourselves everyday.
+Trained on a half a million images from IMDB and Wikipedia, the Spectrum project looks at the intersection of machine learning and the expression of gender. While algorithm is unbiased, the training dataset (and consequently society at large) certainly has a bias. The algorithm teaches the machine to look for the common traits that we use to differentiate ourselves everyday.
 
-Ideas? Criticism? Suggestions for a new video? Let us know!
+Ideas? Criticism? Suggestions for a new video? Let us know in a comment, or send a message to @metasemantic on Twitter.
 
 Project information:
 
